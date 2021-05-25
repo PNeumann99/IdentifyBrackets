@@ -6,13 +6,26 @@ import java.io.InputStreamReader;
 /**
  * Programm, dass eine Textdatei einliest und die darin enthaltenen Klammerpaare identifiziert.
  * Es wird zwischen drei Klammertypen ’(’ und ’)’, ’{’ und ’}’, sowie ’[’ und ’]’ unterschieden.
- * Das Programm geht (gemäß der Aufgabenstellung) davon aus, dass die Datei korrekt geklammert ist.
  * Am Ende des Programms werden die gefundenen Klammerpaare zeilenweise mitsamt Positionen
  * auf der Konsole ausgegeben.
+ *
  * @author akubf
  */
 public class IdentifyBrackets {
-    public static void main(String[] args) throws IOException {
+
+
+    /**
+     * Liest eine Textdatei ein und identifiziert die darin enthaltenen Klammerpaare.
+     * Es wird zwischen drei Klammertypen ’(’ und ’)’, ’{’ und ’}’, sowie ’[’ und ’]’ unterschieden.
+     * Die Vorgehensweise entspricht dem Algorithmus zur Erkennung von Klammerausdrücken mit den in Aufgabe 2 genannten
+     * Änderungen. Am Ende werden die gefundenen Klammerpaare zeilenweise mitsamt Positionen
+     * auf der Konsole ausgegeben.
+     *
+     * @param args der Dateipfad zum zu überprüfenden Klammerausdruck.
+     * @throws IOException              falls das Einlesen des Klammerausdrucks fehlschlägt.
+     * @throws IllegalArgumentException falls der Klammerausdruck nicht korrekt ist.
+     */
+    public static void main(String[] args) throws IOException, IllegalArgumentException {
         String file = args[0]; // Pfad der auszulesenden Datei aus Kommandozeilenparameter auslesen.
         BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(file))); // um die Datei auszulesen
 
@@ -38,25 +51,26 @@ public class IdentifyBrackets {
                             output += match(brackets.top(), positions.top(), pos(lineNr, i + 1)) + "\n"; // Klammern zusammengehörig in den Output packen
                             brackets.pop(); // Klammer vom Stack nehmen
                             positions.pop(); // position vom Stack nehmen
-                        }
+                        } else throw new IllegalArgumentException("Der Klammerausdruck ist nicht korrekt.");
                     } else if (line.charAt(i) == ']') {
                         if (brackets.top() == '[') {
                             output += match(brackets.top(), positions.top(), pos(lineNr, i + 1)) + "\n"; // Klammern zusammengehörig in den Output packen
                             brackets.pop(); // Klammer vom Stack nehmen
                             positions.pop(); // position vom Stack nehmen
-                        }
+                        } else throw new IllegalArgumentException("Der Klammerausdruck ist nicht korrekt.");
                     } else {
                         if (brackets.top() == '{') {
                             output += match(brackets.top(), positions.top(), pos(lineNr, i + 1)) + "\n"; // Klammern zusammengehörig in den Output packen
                             brackets.pop(); // Klammer vom Stack nehmen
                             positions.pop(); // position vom Stack nehmen
-                        }
+                        } else throw new IllegalArgumentException("Der Klammerausdruck ist nicht korrekt.");
                     }
                 }
             }
             line = in.readLine(); // nächste Zeile auslesen
             lineNr++; // Zeilenindex inkrementieren
         }
+        if (!brackets.isEmpty()) throw new IllegalArgumentException("Der Klammerausdruck ist nicht korrekt.");
         System.out.println(output); // Ausgabe auf dem Bildschirm
     }
 
